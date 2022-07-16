@@ -24,9 +24,10 @@ function TourRequest() {
 
   const onSubmit = async (e) => {
     e.preventDefault()
+    const recipientEmail = 'sc529025@dal.ca'
     const { data } = await httpClient.post(
       '/requestTour',
-      { stayDuration },
+      { stayDuration, recipientEmail },
       { headers: { 'Access-Control-Allow-Origin': true } }
     )
     const { success, tourPackages } = data
