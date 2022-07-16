@@ -1,0 +1,12 @@
+{
+  "name": "requesttour",
+  "version": "1.0.0",
+  "description": "",
+  "main": "requestTour.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/pubsub": "^3.1.0"
+  }
+}

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, AppBar, Toolbar, Button } from '@mui/material/'
-import TourRequest from '../services/TourRequest'
+import TourRequest from './TourRequest'
 
 function Navbar() {
   return (
