@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Box, Button, Typography, Modal, TextField } from '@mui/material'
-import publishMessage from '../publishers/tourServicePublisher'
+
+import httpClient from '../../../utils/httpClient'
 
 function TourRequest() {
   const [open, setOpen] = useState(false)
@@ -23,8 +24,17 @@ function TourRequest() {
 
   const onSubmit = async (e) => {
     e.preventDefault()
-
-    await publishMessage()
+    const { data } = await httpClient.post(
+      '/requestTour',
+      { stayDuration },
+      { headers: { 'Access-Control-Allow-Origin': true } }
+    )
+    const { success, tourPackages } = data
+    if (success) {
+      console.log(tourPackages)
+      setStayDuration(0)
+      handleClose()
+    }
   }
 
   return (
