@@ -1,10 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { Typography, Button } from "@mui/material/";
+import React, { useState, useEffect, useMemo } from "react";
+import { Typography, Button, Grid, Select, MenuItem } from "@mui/material/";
 import axios from "axios";
 
 function Services() {
+  const options = [
+    { label: "React", value: "react" },
+    { label: "JavaScript", value: "js" },
+    { label: "TypeScript", value: "ts" },
+  ];
   const [foodOrdered, setFoodOrdered] = useState(false);
-  useEffect(() => {}, [foodOrdered]);
+  const [foodOptions, setFoodOptions] = useState([
+    {
+      foodItem: "Poha",
+      price: 10,
+    },
+    {
+      foodItem: "Upma",
+      price: 15,
+    },
+    {
+      foodItem: "Sandwich",
+      price: 25,
+    },
+  ]);
+  const [selectedFoodOption, setSelectedFoodOption] = useState("Poha");
+  const [selectedFoodPrice, setSelectedFoodPrice] = useState(10);
+  //useEffect(() => {}, [foodOrdered]);
+  useEffect(() => {
+    setSelectedFoodOption(foodOptions[0].foodItem);
+    setSelectedFoodPrice(foodOptions[0].price);
+  }, []);
 
   function placeOrder() {
     const options = {
@@ -16,7 +41,8 @@ function Services() {
       },
       data: {
         customerId: "56789",
-        order: "Breakfast",
+        order: selectedFoodOption,
+        price: selectedFoodPrice,
       },
     };
     axios(options).then((res) => {
@@ -24,6 +50,12 @@ function Services() {
       setFoodOrdered(true);
     });
   }
+
+  const handleChange = (e) => {
+    setSelectedFoodOption(e.target.name);
+    setSelectedFoodPrice(e.target.value);
+  };
+
   return (
     <>
       <Typography
@@ -36,6 +68,47 @@ function Services() {
       >
         Services
       </Typography>
+      <Grid container spacing={2}>
+        <Grid item xs={2}>
+          <Typography
+            variant="body1"
+            component="div"
+            color={"black "}
+            fontWeight={"bolder"}
+            sx={{ flexGrow: 1 }}
+            style={{ marginLeft: 20, marginTop: 20 }}
+          >
+            Food options
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Select
+            name={selectedFoodOption}
+            value={selectedFoodPrice}
+            onChange={handleChange}
+          >
+            {foodOptions?.map((option) => {
+              return (
+                <MenuItem key={option.value} value={option.price}>
+                  {option.foodItem}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </Grid>
+        <Grid item xs={2}>
+          <Typography
+            variant="body1"
+            component="div"
+            color={"black "}
+            fontWeight={"bolder"}
+            sx={{ flexGrow: 1 }}
+            style={{ marginLeft: 20, marginTop: 20 }}
+          >
+            Price: {selectedFoodPrice}
+          </Typography>
+        </Grid>
+      </Grid>
       <Button
         variant="outlined"
         style={{ marginLeft: 20, marginTop: 20 }}
@@ -58,46 +131,6 @@ function Services() {
       >
         Order breakfast
       </Button>
-      {/* <Box sx={{ flexGrow: 1 }}>
-        <Grid item lg={2}></Grid>
-        <Grid item lg={5} xs={12}>
-          <Typography
-            variant="h6"
-            component="div"
-            color={"black "}
-            fontWeight={"bolder"}
-            sx={{ flexGrow: 1 }}
-            style={{ marginBottom: 10 }}
-          >
-            Services
-          </Typography>
-        </Grid>
-        <Grid item lg={5}></Grid>
-        <Grid item lg={3} md={4} xs={12}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DatePicker
-              disablePast
-              disableFuture
-              label="Date"
-              openTo="day"
-              views={["year", "month", "day"]}
-              value={startDate}
-              onChange={async (event) => {
-                if (event !== null) {
-                  let currentHrs = new Date(event).getHours();
-                  console.log(currentHrs);
-                  if (currentHrs < 6 || currentHrs > 11) {
-                    alert("Breakfast can be ordered between 6 AM to 11 AM.");
-                  } else {
-                    setStartDate(event);
-                  }
-                }
-              }}
-              renderInput={(params) => <TextField {...params} />}
-            />
-          </LocalizationProvider>
-        </Grid>
-      </Box> */}
     </>
   );
 }
