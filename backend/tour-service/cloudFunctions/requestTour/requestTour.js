@@ -8,13 +8,13 @@ exports.requestTour = async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*')
   res.set('Access-Control-Allow-Methods', '*')
   res.set('Access-Control-Allow-Headers', '*')
-  const { stayDuration } = req.body
+  const { stayDuration, recipientEmail } = req.body
 
   if (!stayDuration)
     return res.json({ success: false, message: 'Stay duration is required' })
 
   const message = {
-    recipient: 'saichand.kolloju@gmail.com',
+    recipient: recipientEmail,
     body: stayDuration,
   }
 
