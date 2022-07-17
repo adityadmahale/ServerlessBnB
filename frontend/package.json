@@ -21,7 +21,11 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.5",
     "styled-components": "^5.3.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "amazon-cognito-identity-js": "^5.2.9",
+    "aws-sdk": "^2.1176.0",
+    "firebase": "^9.9.0",
+    "@aws-sdk/client-dynamodb": "^3.131.0"
   },
   "scripts": {
     "start": "react-scripts start",
