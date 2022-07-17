@@ -1,0 +1,27 @@
+swagger: '2.0'
+info:
+  title: serverlessbnb API
+  description: API gateway for securing the serverless API resources of the Serverless BnB application
+  version: 1.0.0
+schemes:
+  - https
+produces:
+  - application/json
+
+host: serverlessbnb-1akwzzj5qi6x3.apigateway.csci5410-a4-355201.cloud.goog
+x-google-endpoints:
+  - name: serverlessbnb-1akwzzj5qi6x3.apigateway.csci5410-a4-355201.cloud.goog
+    allowCors: True
+
+paths:
+  /requestTour:
+    post:
+      summary: Request a tour package
+      operationId: requestTour
+      x-google-backend:
+        address: https://us-central1-csci5410-a4-355201.cloudfunctions.net/requestTour
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: string

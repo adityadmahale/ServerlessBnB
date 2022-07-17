@@ -1,0 +1,12 @@
+{
+  "name": "emailsender",
+  "version": "1.0.0",
+  "description": "",
+  "main": "emailSender.js",
+  "keywords": [],
+  "author": "Sai Chand Kolloju",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^7.7.0"
+  }
+}
