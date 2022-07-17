@@ -3,30 +3,23 @@ import { Typography, Button, Grid, Select, MenuItem } from "@mui/material/";
 import axios from "axios";
 
 function Services() {
-  const options = [
-    { label: "React", value: "react" },
-    { label: "JavaScript", value: "js" },
-    { label: "TypeScript", value: "ts" },
-  ];
   const [foodOrdered, setFoodOrdered] = useState(false);
   const [foodOptions, setFoodOptions] = useState([
     {
-      foodItem: "Poha",
+      foodItem: "",
       price: 10,
-    },
-    {
-      foodItem: "Upma",
-      price: 15,
-    },
-    {
-      foodItem: "Sandwich",
-      price: 25,
     },
   ]);
   const [selectedFoodOption, setSelectedFoodOption] = useState("Poha");
   const [selectedFoodPrice, setSelectedFoodPrice] = useState(10);
   //useEffect(() => {}, [foodOrdered]);
   useEffect(() => {
+    axios("https://kitchen-service-kc2rqvhqga-uc.a.run.app/getFoodItems").then(
+      (res) => {
+        console.log(res.data);
+        setFoodOptions(res.data);
+      }
+    );
     setSelectedFoodOption(foodOptions[0].foodItem);
     setSelectedFoodPrice(foodOptions[0].price);
   }, []);

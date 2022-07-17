@@ -1,22 +1,35 @@
 const { sendMessage } = require("../pubsub/pubsub");
 const topicID = "order-topic";
 const Firestore = require("@google-cloud/firestore");
-// Use your project ID here
 const PROJECTID = "hotel-management-serverless";
 const COLLECTION_NAME = "orders";
 const firestore = new Firestore({
   projectId: PROJECTID,
   timestampsInSnapshots: true,
 });
-const defaultMealPrice = 100;
+
+const getFoodItems = async (req, res) => {
+  const foodItemsRef = firestore.collection("foodItems");
+  const snapshot = await foodItemsRef.get();
+  let foodItems = [];
+  if (snapshot.empty) {
+    console.log("No matching documents.");
+    return res.status(404);
+  }
+  snapshot.forEach((foodItem) => {
+    console.log(foodItem.data());
+    foodItems.push(foodItem.data());
+  });
+  return res.status(200).json(foodItems);
+};
 
 const placeOrder = async (req, res) => {
   console.log(req.body);
-  const { customerId, order } = req.body;
+  const { customerId, order, price } = req.body;
   const message = JSON.stringify({
     customerID: customerId,
     order: order,
-    mealPrice: defaultMealPrice,
+    mealPrice: price,
     createdDate: new Date(),
   });
   const messageId = await sendMessage(topicID, message);
@@ -37,7 +50,7 @@ const getOrdersByCustomer = async (req, res) => {
     console.log("No matching documents.");
     return res.status(404);
   }
-  let orders = 0;
+  let orders = [];
   snapshot.forEach((doc) => {
     console.log(doc.id, "=>", doc.data());
     const createdDate = new Date(doc.data().createdDate);
@@ -49,13 +62,13 @@ const getOrdersByCustomer = async (req, res) => {
       createdDate.getFullYear() <= endDate.getFullYear()
     ) {
       console.log(doc.id + " selected.");
-      orders++;
+      orders.push(doc.data());
     }
   });
   return res.status(200).json({
     success: true,
     orders: orders,
-    message: `Total orders by the customer ${customerId} : ${orders}`,
+    message: `Total orders by the customer ${customerId} : ${orders.length}`,
   });
 };
-module.exports = { placeOrder, getOrdersByCustomer };
+module.exports = { getFoodItems, placeOrder, getOrdersByCustomer };

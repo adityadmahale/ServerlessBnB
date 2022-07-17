@@ -1,12 +1,17 @@
 var express = require("express");
 var router = express.Router();
-const { placeOrder, getOrdersByCustomer } = require("../controllers/Order");
+const {
+  getFoodItems,
+  placeOrder,
+  getOrdersByCustomer,
+} = require("../controllers/Order");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 
+router.get("/getFoodItems", getFoodItems);
 router.post("/placeorder", placeOrder);
 router.get("/getOrdersByCustomer", getOrdersByCustomer);
 
