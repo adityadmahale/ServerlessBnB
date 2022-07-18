@@ -25,7 +25,7 @@ exports.emailSender = async (message, context) => {
     from: 'sc529025@dal.ca',
     subject: 'Tour Package Details',
     text: 'This is your tailored tour package',
-    html: `<strong>Plan your package for ${emailDetails.body} days</strong>`,
+    html: emailDetails?.body,
   }
 
   sendMail(msg)
