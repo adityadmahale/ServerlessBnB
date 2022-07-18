@@ -1,4 +1,5 @@
 import './index.css'
+import "./App.css";
 import 'react-toastify/dist/ReactToastify.css'
 import { Flip, ToastContainer } from 'react-toastify'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
@@ -9,6 +10,9 @@ import NavBar from './components/customer/header/Navbar'
 import Services from './components/customer/services/Services'
 import Registration from './components/registration/registration'
 import TourDetails from './components/tourRequest/TourDetails'
+import Login from './components/login/Login';
+import QuestionValidation from './components/login/QuestionValidation';
+import CaesarCipherValidation from './components/login/CaesarCipherValidation';
 
 function App() {
   return (
@@ -21,6 +25,11 @@ function App() {
       <Router>
         <NavBar />
         <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/question-validate" element={<QuestionValidation />} />
+          <Route path="/caesarcipher-validate" element={<CaesarCipherValidation />} />
+
           <Route path='/booking' element={<Booking />} />
           <Route path='/home' element={<Home />} />
           <Route path='/checkout' element={<Checkout />} />
