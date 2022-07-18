@@ -1,8 +1,8 @@
 import { React } from 'react';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../customer/header/Navbar";
 import axios from 'axios';
+import { toast } from "react-toastify";
 
 function CaesarCipherValidation() {
 
@@ -30,60 +30,61 @@ function CaesarCipherValidation() {
 
     const handleCaesarCipherValueChange = (event) => {
         const { name, value } = event.target;
-        // console.log(event+ "  ");
         setValues({ ...encryptedStrForm, [name]: value });
     };
 
     const oSubmitCaesarCipherForm = (event) => {
         event.preventDefault();
         if (encryptedStrForm.encryptedStr == '') {
-            alert('Please enter encrypted value to proceed');
+            toast.error('Encrypted String can not be empty!!');
             return;
         }
         const requestBody = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: {
-                // 'username': localStorage.getItem('username'),
-                'username': 'abc@gmail.com',
+                'username': localStorage.getItem('username'),
                 'caesarString': createdCipherString,
                 'userInput': encryptedStrForm.encryptedStr
             }
         };
         let obj = {
-            // 'username': localStorage.getItem('username'),
-            'username': 'abc@gmail.com',
+            'username': localStorage.getItem('username'),
             'caesarString': createdCipherString,
             'userInput': encryptedStrForm.encryptedStr
         };
         axios.post('https://us-central1-caesarcipher-356421.cloudfunctions.net/validateCaesar', obj)
             .then(response => {
-                if (response.status >= 400) {
-                    throw new Error("Server responds with error!");
+                if (response.status === 401) {
+                    toast.error('Incorrect cipher. Please try again!!');
                 }
-                localStorage.setItem("group29_logged_in", true);
-                console.log("Navigate to dashboard");
-                // navigate("dashboard");
+                else if (response.status === 200) {
+                    localStorage.setItem("group29_logged_in", true);
+                    toast.info("Login successful")
+                    navigate("../home");
+                }
+                else {
+                    toast.error('Something went wrong!!');
+                }
             })
             .catch(error => {
                 console.log(error);
-                alert(error);
+                toast.error('Incorrect cipher. Please try again!!');
             });
     }
 
 
     return (
         <>
-            <Navbar></Navbar>
             <form onSubmit={oSubmitCaesarCipherForm}>
                 <div className="f-body">
                     <div>
-                        <div>Encrypt String</div>
+                        <div>Encrypt the below string with your Secret Key:</div>
                         <label><b>{createdCipherString}</b></label>
                         <input type="text" value={encryptedStrForm.encryptedStr} name="encryptedStr" onChange={handleCaesarCipherValueChange}></input>
                     </div>
 
-                    <button type="submit">Submit</button>
+                    <button type="submit">Log In</button>
                 </div>
             </form>
         </>
@@ -92,5 +93,3 @@ function CaesarCipherValidation() {
 }
 
 export default CaesarCipherValidation
-
-// https://us-east1-group28serverless-356606.cloudfunctions.net/caeserCipher

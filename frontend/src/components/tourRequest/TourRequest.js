@@ -1,7 +1,32 @@
 import { useState } from 'react'
-import { Box, Button, Typography, Modal, TextField } from '@mui/material'
+import {
+  Box,
+  Button,
+  Typography,
+  Modal,
+  TextField,
+  styled,
+} from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
-import httpClient from '../../../utils/httpClient'
+import httpClient from '../../utils/httpClient'
+
+const StyledButton = styled(Button)({
+  marginTop: '40px',
+  padding: '15px',
+  backgroundColor: '#8C522A',
+  color: '#fff',
+  borderColor: '#8C522A',
+  '&:active': {
+    backgroundColor: '#8C522A',
+  },
+  '&:hover': {
+    backgroundColor: '#8C522A',
+  },
+  '&:disabled': {
+    backgroundColor: '#dddddd',
+  },
+})
 
 function TourRequest() {
   const [open, setOpen] = useState(false)
@@ -10,16 +35,19 @@ function TourRequest() {
 
   const [stayDuration, setStayDuration] = useState(0)
 
+  const navigate = useNavigate()
+
   const style = {
     position: 'absolute',
-    top: '50%',
+    top: '40%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
+    border: '0px solid #000',
+    borderRadius: '10px',
+    boxShadow: 15,
     p: 4,
+    width: '40%',
   }
 
   const onSubmit = async (e) => {
@@ -35,6 +63,7 @@ function TourRequest() {
       console.log(tourPackages)
       setStayDuration(0)
       handleClose()
+      navigate('/tourDetails', { state: { tourPackages } })
     }
   }
 
@@ -68,14 +97,9 @@ function TourRequest() {
             </Box>
 
             <Box my={2}>
-              <Button
-                fullWidth
-                variant='contained'
-                color='secondary'
-                type='submit'
-              >
+              <StyledButton fullWidth variant='contained' type='submit'>
                 Request
-              </Button>
+              </StyledButton>
             </Box>
           </form>
         </Box>

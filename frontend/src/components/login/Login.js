@@ -2,8 +2,8 @@ import { React } from 'react';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
-import UserPool from "../../Config/awsConfiguration"
-import Navbar from "../customer/header/Navbar";
+import UserPool from "../../Config/awsConfiguration";
+import { toast } from "react-toastify";
 
 
 function Login() {
@@ -24,7 +24,7 @@ function Login() {
     const onLoginFormSubmit = (event) => {
         event.preventDefault();
         if (loginForm.email == '' || loginForm.password == '') {
-            alert('Please enter credentials');
+            toast.error("Please enter credentials!!");
             return;
         }
 
@@ -48,7 +48,7 @@ function Login() {
 
             onFailure: err => {
                 console.error("onFailure:", err);
-                alert("Invalid username or Password");
+                toast.error("Invalid Username or Password. Please try again!!");
             }
         });
     }
@@ -56,7 +56,6 @@ function Login() {
 
     return (
         <>
-            <Navbar></Navbar>
             <div>
                 <form onSubmit={onLoginFormSubmit}>
                     <div className="f-body">
@@ -69,6 +68,10 @@ function Login() {
                             <input type="password" name="password" value={loginForm.password} onChange={setFormValueChange}></input>
                         </div>
                         <button type="submit">Submit</button>
+                        <div>
+                            <label>Don't have an account?</label>
+                            <a style={{ textDecoration: 'none' }} href='/registration'>     Sign Up</a>
+                        </div>
                     </div>
                 </form>
             </div>

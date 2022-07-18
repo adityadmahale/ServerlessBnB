@@ -2,7 +2,7 @@ import { React } from 'react';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import Navbar from "../customer/header/Navbar";
+import { toast } from "react-toastify";
 
 function QuestionValidation() {
 
@@ -31,7 +31,7 @@ function QuestionValidation() {
     const handleQuestionnaireForm = (event) => {
         event.preventDefault();
         if (sQuestionAnswerForm['answer'] == '') {
-            alert('Please enter answer');
+            toast.error('Please enter something.');
             return;
         }
 
@@ -53,7 +53,7 @@ function QuestionValidation() {
             })
             .catch(error => {
                 console.log(error + " questionnaire response");
-                alert("Incorrect Answer!. Please try again");
+                toast.error('Incorrect Answer. Please try again!!');
             });
     }
 
@@ -66,10 +66,12 @@ function QuestionValidation() {
 
     return (
         <>
-            <Navbar></Navbar>
             <form onSubmit={handleQuestionnaireForm}>
                 <div className="f-body">
                     <div >
+                        <label>Security Question:</label>
+                    </div>
+                    <div>
                         <label>{securityQuestion}</label>
                         <input type="text" value={sQuestionAnswerForm['answer']} name="answer" onChange={handleFormValueChange}></input>
                     </div>
