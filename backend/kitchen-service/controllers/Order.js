@@ -25,11 +25,12 @@ const getFoodItems = async (req, res) => {
 
 const placeOrder = async (req, res) => {
   console.log(req.body);
-  const { customerId, order, price } = req.body;
+  const { customerId, order, price, email } = req.body;
   const message = JSON.stringify({
     customerID: customerId,
     order: order,
     mealPrice: price,
+    email: email,
     createdDate: new Date(),
   });
   const messageId = await sendMessage(topicID, message);
