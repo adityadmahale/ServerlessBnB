@@ -1,8 +1,29 @@
 const { PubSub } = require('@google-cloud/pubsub')
+const axios = require('axios')
 
 const pubsub = new PubSub()
 
 const EMAIL_SERVICE_TOPIC = 'EmailService'
+
+const formatTourPackages = (tourPackages) => {
+  const { Alpha, Beta, Gamma } = tourPackages
+
+  return `
+
+    <h3>Here are the recommended tour packages for you</h3>
+
+    <p>
+      <strong>Alpha Tour - Recommendation score - ${+Alpha * 100}
+    </p>
+    <p>
+      <strong>Beta Tour - Recommendation score - ${+Beta * 100}
+    </p>
+    <p>
+      <strong>Gamma Tour - Recommendation score - ${+Gamma * 100}
+    </p>
+  
+  `
+}
 
 exports.requestTour = async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*')
@@ -13,9 +34,21 @@ exports.requestTour = async (req, res) => {
   if (!stayDuration)
     return res.json({ success: false, message: 'Stay duration is required' })
 
+  if (!recipientEmail)
+    return res.json({ success: false, message: 'Recipient email is required' })
+
+  const { data } = await axios.post(
+    'https://us-central1-tidy-interface-355301.cloudfunctions.net/sample-funct',
+    {
+      Names: 'test',
+      Duration: String(stayDuration),
+    }
+  )
+  console.log(data)
+  const tourPackages = data
   const message = {
     recipient: recipientEmail,
-    body: stayDuration,
+    body: formatTourPackages(tourPackages),
   }
 
   const messageBuffer = Buffer.from(JSON.stringify(message))
@@ -29,5 +62,5 @@ exports.requestTour = async (req, res) => {
     return res.json({ success: false, message: err.message })
   }
 
-  res.json({ success: true, tourPackages: [] })
+  res.json({ success: true, tourPackages })
 }

@@ -1,6 +1,32 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Typography, Button, Grid, Select, MenuItem } from "@mui/material/";
+import {
+  Typography,
+  Button,
+  Grid,
+  Select,
+  MenuItem,
+  Container,
+  styled,
+} from "@mui/material/";
 import axios from "axios";
+import { toast } from "react-toastify";
+
+const StyledButton = styled(Button)({
+  marginTop: "40px",
+  padding: "15px",
+  backgroundColor: "#8C522A",
+  color: "#fff",
+  borderColor: "#8C522A",
+  "&:active": {
+    backgroundColor: "#8C522A",
+  },
+  "&:hover": {
+    backgroundColor: "#8C522A",
+  },
+  "&:disabled": {
+    backgroundColor: "#dddddd",
+  },
+});
 
 function Services() {
   const [foodOrdered, setFoodOrdered] = useState(false);
@@ -50,32 +76,32 @@ function Services() {
   };
 
   return (
-    <>
+    <Container
+      sx={{
+        marginTop: "30px",
+        paddingTop: "20px",
+        backgroundColor: "#fff",
+        borderRadius: "10px",
+        paddingBottom: "20px",
+        border: "1px solid #8C522A",
+        width: "60%",
+      }}
+    >
       <Typography
         variant="h6"
         component="div"
         color={"black "}
         fontWeight={"bolder"}
+        marginBottom="10px"
         sx={{ flexGrow: 1 }}
-        style={{ marginLeft: 20, marginTop: 20 }}
+        style={{ marginTop: 20 }}
       >
-        Services
+        Order Breakfast
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={2}>
-          <Typography
-            variant="body1"
-            component="div"
-            color={"black "}
-            fontWeight={"bolder"}
-            sx={{ flexGrow: 1 }}
-            style={{ marginLeft: 20, marginTop: 20 }}
-          >
-            Food options
-          </Typography>
-        </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={12} md={10}>
           <Select
+            fullWidth
             name={selectedFoodOption}
             value={selectedFoodPrice}
             onChange={handleChange}
@@ -89,42 +115,49 @@ function Services() {
             })}
           </Select>
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={12} md={2}>
           <Typography
             variant="body1"
             component="div"
             color={"black "}
-            fontWeight={"bolder"}
             sx={{ flexGrow: 1 }}
-            style={{ marginLeft: 20, marginTop: 20 }}
+            style={{
+              backgroundColor: "#8C522A",
+              borderRadius: "5px",
+              padding: "15px",
+              color: "#fff",
+              fontWeight: "bolder",
+              fontSize: "18px",
+            }}
           >
-            Price: {selectedFoodPrice}
+            $ {selectedFoodPrice}
           </Typography>
         </Grid>
       </Grid>
-      <Button
-        variant="outlined"
-        style={{ marginLeft: 20, marginTop: 20 }}
+      <StyledButton
+        fullWidth
         onClick={(event) => {
           if (event !== null) {
             let currentHrs = new Date().getHours();
             console.log(currentHrs);
             if (!(currentHrs < 6 || currentHrs > 11)) {
-              alert("Breakfast can only be ordered between 6 AM to 11 AM.");
+              toast.error(
+                "Breakfast can only be ordered between 6 AM to 11 AM."
+              );
             } else {
               if (foodOrdered) {
-                alert("Breakfast already ordered.");
+                toast.error("Breakfast already ordered.");
               } else {
                 placeOrder();
-                alert("Breakfast ordered.");
+                toast.success("Breakfast ordered.");
               }
             }
           }
         }}
       >
         Order breakfast
-      </Button>
-    </>
+      </StyledButton>
+    </Container>
   );
 }
 
