@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Typography,
   Button,
@@ -29,25 +29,21 @@ const StyledButton = styled(Button)({
 });
 
 function Services() {
+  const initialFoodOption = {
+    foodItem: "Poha",
+    price: 10,
+  };
   const [foodOrdered, setFoodOrdered] = useState(false);
-  const [foodOptions, setFoodOptions] = useState([
-    {
-      foodItem: "",
-      price: 10,
-    },
-  ]);
-  const [selectedFoodOption, setSelectedFoodOption] = useState("Poha");
-  const [selectedFoodPrice, setSelectedFoodPrice] = useState(10);
-  //useEffect(() => {}, [foodOrdered]);
+  const [foodOptions, setFoodOptions] = useState([initialFoodOption]);
+  const [selectedFood, setSelectedFood] = useState(initialFoodOption);
+
   useEffect(() => {
     axios("https://kitchen-service-kc2rqvhqga-uc.a.run.app/getFoodItems").then(
       (res) => {
-        console.log(res.data);
         setFoodOptions(res.data);
+        console.log(res.data);
       }
     );
-    setSelectedFoodOption(foodOptions[0].foodItem);
-    setSelectedFoodPrice(foodOptions[0].price);
   }, []);
 
   function placeOrder() {
@@ -60,8 +56,8 @@ function Services() {
       },
       data: {
         customerId: "56789",
-        order: selectedFoodOption,
-        price: selectedFoodPrice,
+        order: selectedFood.foodItem,
+        price: selectedFood.price,
       },
     };
     axios(options).then((res) => {
@@ -69,11 +65,6 @@ function Services() {
       setFoodOrdered(true);
     });
   }
-
-  const handleChange = (e) => {
-    setSelectedFoodOption(e.target.name);
-    setSelectedFoodPrice(e.target.value);
-  };
 
   return (
     <Container
@@ -102,15 +93,19 @@ function Services() {
         <Grid item xs={12} md={10}>
           <Select
             fullWidth
-            name={selectedFoodOption}
-            value={selectedFoodPrice}
-            onChange={handleChange}
+            defaultValue={initialFoodOption.foodItem}
+            onChange={(e) => {
+              console.log(e.target);
+              const filteredOption = foodOptions.filter(
+                (option) => option.foodItem === e.target.value
+              )[0];
+              console.log(filteredOption);
+              setSelectedFood(filteredOption);
+            }}
           >
             {foodOptions?.map((option) => {
               return (
-                <MenuItem key={option.value} value={option.price}>
-                  {option.foodItem}
-                </MenuItem>
+                <MenuItem value={option.foodItem}>{option.foodItem}</MenuItem>
               );
             })}
           </Select>
@@ -119,7 +114,7 @@ function Services() {
           <Typography
             variant="body1"
             component="div"
-            color={"black "}
+            color={"black"}
             sx={{ flexGrow: 1 }}
             style={{
               backgroundColor: "#8C522A",
@@ -130,7 +125,7 @@ function Services() {
               fontSize: "18px",
             }}
           >
-            $ {selectedFoodPrice}
+            $ {selectedFood.price}
           </Typography>
         </Grid>
       </Grid>
@@ -139,8 +134,8 @@ function Services() {
         onClick={(event) => {
           if (event !== null) {
             let currentHrs = new Date().getHours();
-            console.log(currentHrs);
-            if (!(currentHrs < 6 || currentHrs > 11)) {
+            console.log("currentHrs" + currentHrs);
+            if (currentHrs < 6 || currentHrs > 11) {
               toast.error(
                 "Breakfast can only be ordered between 6 AM to 11 AM."
               );
