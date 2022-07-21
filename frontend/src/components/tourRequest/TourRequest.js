@@ -12,6 +12,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 
 import httpClient from '../../utils/httpClient'
+import { toast } from 'react-toastify'
 
 const StyledButton = styled(Button)({
   marginTop: '40px',
@@ -63,13 +64,14 @@ function TourRequest() {
       { stayDuration, recipientEmail },
       { headers: { 'Access-Control-Allow-Origin': true } }
     )
-    const { success, tourPackage } = data
+    const { success, tourPackage, message } = data
     setLoading(false)
     if (success) {
-      console.log(tourPackage)
       setStayDuration(0)
       handleClose()
       navigate('/tourDetails', { state: { tourPackage } })
+    } else {
+      toast.error(message, { position: 'bottom-left' })
     }
   }
 
