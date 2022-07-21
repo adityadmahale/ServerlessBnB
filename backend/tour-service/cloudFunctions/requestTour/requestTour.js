@@ -44,23 +44,24 @@ exports.requestTour = async (req, res) => {
       Duration: String(stayDuration),
     }
   )
-  console.log(data)
-  const tourPackages = data
-  const message = {
-    recipient: recipientEmail,
-    body: formatTourPackages(tourPackages),
-  }
+  const { success, tourPackages, message: tourPredictionMessage } = data
 
-  const messageBuffer = Buffer.from(JSON.stringify(message))
+  if (success) {
+    const message = {
+      recipient: recipientEmail,
+      body: formatTourPackages(tourPackages),
+    }
 
-  try {
-    await pubsub
-      .topic(EMAIL_SERVICE_TOPIC)
-      .publishMessage({ data: messageBuffer })
-  } catch (err) {
-    console.error(err)
-    return res.json({ success: false, message: err.message })
-  }
+    const messageBuffer = Buffer.from(JSON.stringify(message))
 
-  res.json({ success: true, tourPackages })
+    try {
+      await pubsub
+        .topic(EMAIL_SERVICE_TOPIC)
+        .publishMessage({ data: messageBuffer })
+    } catch (err) {
+      console.error(err)
+      return res.json({ success: false, message: err.message })
+    }
+    res.json({ success: true, tourPackages })
+  } else res.json({ success, message: tourPredictionMessage })
 }
