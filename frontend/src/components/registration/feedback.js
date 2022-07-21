@@ -40,6 +40,7 @@ function Feedbacks() {
 
   const addFeedback = async () => {
     await feedbackCollectionRef.add({name:name, feedback:newFeedback})
+    toast.success("Feedback added successfuly");
 
   }
   
