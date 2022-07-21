@@ -62,7 +62,7 @@ export default function SignUp() {
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		const data = new FormData(event.currentTarget);
-		console.log(data.get("email"));
+
 		setEmail(data.get("email"));
 		setPassword(data.get("password"));
 		setGivenName(data.get("firstName"));
@@ -84,8 +84,6 @@ export default function SignUp() {
 				.then(function (response) {
 					setCustomerid(response.data);
 				});
-			console.log(password);
-			console.log(customerid);
 			//Adding data to cognito
 			var attributeList = [];
 			var dataEmail = {
@@ -155,7 +153,6 @@ export default function SignUp() {
 	};
 	const validate = (data) => {
 		const errors = {};
-		console.log(data);
 		if (data.get("firstName") === "") {
 			errors.firstname = "First name Required!";
 		} else if (!/^[A-Za-z]+$/.test(data.get("firstName"))) {
@@ -196,7 +193,6 @@ export default function SignUp() {
 		} else if (!/^[0-9]+$/.test(data.get("secretKey"))) {
 			errors.secretKey = "Only Numeric is allowed";
 		}
-		console.log(errors);
 		setError(errors);
 	};
 
