@@ -1,28 +1,52 @@
 const { PubSub } = require('@google-cloud/pubsub')
+const aws = require('aws-sdk')
 const axios = require('axios')
 
+aws.config.loadFromPath('./config.json')
+
 const pubsub = new PubSub()
+const dynamodb = new aws.DynamoDB.DocumentClient()
 
 const EMAIL_SERVICE_TOPIC = 'EmailService'
 
-const formatTourPackages = (tourPackages) => {
-  const { Alpha, Beta, Gamma } = tourPackages
-
+const formatTourPackages = ({ name, price, destination }) => {
   return `
 
-    <h3>Here are the recommended tour packages for you</h3>
+    <h3>Here is the recommended tour package for you</h3>
 
     <p>
-      <strong>Alpha Tour - Recommendation score - ${+Alpha * 100}
+      <strong>Name:  ${name}
     </p>
     <p>
-      <strong>Beta Tour - Recommendation score - ${+Beta * 100}
+      <strong>Destination: ${destination}
     </p>
     <p>
-      <strong>Gamma Tour - Recommendation score - ${+Gamma * 100}
+      <strong>Price: CAD ${price}
     </p>
-  
   `
+}
+
+const getTourPackageDetails = async (id) => {
+  const params = {
+    Key: {
+      name: id,
+    },
+    TableName: 'tourPackages',
+  }
+  const res = await dynamodb.get(params).promise()
+  return res
+}
+
+const getMostPreferredTour = (tourPackages) => {
+  let maxScore = -1
+  let mostPreferredTourPackageID = null
+  for (const [packageId, score] of Object.entries(tourPackages)) {
+    if (score > maxScore) {
+      maxScore = score
+      mostPreferredTourPackageID = packageId
+    }
+  }
+  return mostPreferredTourPackageID
 }
 
 exports.requestTour = async (req, res) => {
@@ -47,21 +71,25 @@ exports.requestTour = async (req, res) => {
   const { success, tourPackages, message: tourPredictionMessage } = data
 
   if (success) {
-    const message = {
-      recipient: recipientEmail,
-      body: formatTourPackages(tourPackages),
-    }
-
-    const messageBuffer = Buffer.from(JSON.stringify(message))
-
     try {
+      const mostPreferredTourID = getMostPreferredTour(tourPackages)
+      const { Item } = await getTourPackageDetails(mostPreferredTourID)
+
+      const message = {
+        recipient: recipientEmail,
+        body: formatTourPackages(Item),
+      }
+
+      const messageBuffer = Buffer.from(JSON.stringify(message))
+
       await pubsub
         .topic(EMAIL_SERVICE_TOPIC)
         .publishMessage({ data: messageBuffer })
+
+      return res.json({ success: true, tourPackage: Item })
     } catch (err) {
       console.error(err)
       return res.json({ success: false, message: err.message })
     }
-    res.json({ success: true, tourPackages })
   } else res.json({ success, message: tourPredictionMessage })
 }
