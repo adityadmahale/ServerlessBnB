@@ -10,6 +10,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import axios from "axios";
 
 //AWS and GCP imports
 import userPool from "./userPool";
@@ -26,10 +27,10 @@ export default function SignUp() {
 	//AWS config
 	const config = {
 		region: "us-east-1",
-		accessKeyId: "ASIAQC5HHFVDAN32B46E",
-		secretAccessKey: "w4zegUTtFVK5F1hicVq7BdKkQpjKGk12+NQd1WdW",
+		accessKeyId: "ASIAQC5HHFVDAIEJJB6D",
+		secretAccessKey: "IlhwL8hyLlDP6yBbJxmN5HJehE8dHINjdr01WE0Y",
 		sessionToken:
-			"FwoGZXIvYXdzELX//////////wEaDFKEJ/jLc6VLOnGA6iLAARyRQ3Goj5s7uXi4O39Sl7CB2EVZ38j3cgy+NAVPgH8Ns7bXJqqOwLzmtXyTNAZBP3FNOEunPmejnYRsAvPz9NUefojaASP72HnjSpm5kbB+KHy+ahy5qJmhUXAs1Xa42kN+Ke9kQXpQt99ZRHepm+eoGUsVdqGVm/NPQLxQkmUZvebzLuGaOifU/uUKbhca0XBnpss4wjxKhH6+zgYEWmw9hyAVJVxaE2ojGXsogj2wjwurMQJCYkQrAttS6ZgwxCii1dGWBjItaZwVfg7nqYptK35JdZ3GyL/JdGN819kPUrajyxmIu5ayz1yLTb+3hvprDQf9",
+			"FwoGZXIvYXdzEAMaDJk+jxq3lDJrJ/5OVSLAASWUWv8nfRciOtUMXjbaYegq0DB/mg8saCUOCdDU1TYSSZnNYtIfLxXM8kA7YvmnHsCfvbtvc++TrFcx4e2oBWAMwRLVKPhQPGxesZ0HMMiiwfDhM0pzBboGe7jyX2k1pDeG3/Bw+0BfFKlSRQWUSVjdJbWGjYwtPAfwmgwb+xbOEiWAdsgCsJ1SGB2dFCy4yURCYigxnjt5wKWKA0yY4Z5xnPC1LtI3DMb7rE5y0+VXDXcS+F8a3/VgMX69QlK2USiR1OKWBjItP+WCAnyOquaNTBQavMDEzsIINmJNfya/EeDu5QV/JzLNhFVZFmgRQsX9dQ0G",
 	};
 	AWS.config.update({
 		region: config.region,
@@ -52,6 +53,7 @@ export default function SignUp() {
 	const [answer2, setAnswer2] = useState("");
 	const [answer3, setAnswer3] = useState("");
 	const [secretKey, setSetSecretKey] = useState("");
+	const [customerid, setCustomerid] = useState("");
 	const [error, setError] = useState({});
 	const question1 = "What is the name of your primary school?";
 	const question2 = "What is the name of your childhood friend?";
@@ -71,7 +73,19 @@ export default function SignUp() {
 		setSetSecretKey(data.get("secretKey"));
 		validate(data);
 		if (true) {
-			console.log(email);
+			axios
+				.post(
+					"https://xcorq32k65.execute-api.us-east-1.amazonaws.com/dev/customerid",
+					{
+						name: givenName,
+						room: "suite",
+					}
+				)
+				.then(function (response) {
+					setCustomerid(response.data);
+				});
+			console.log(password);
+			console.log(customerid);
 			//Adding data to cognito
 			var attributeList = [];
 			var dataEmail = {
@@ -119,6 +133,7 @@ export default function SignUp() {
 					email: { S: email },
 					firstName: { S: givenName },
 					lastName: { S: familyName },
+					customerid: { S: customerid },
 				},
 			};
 
