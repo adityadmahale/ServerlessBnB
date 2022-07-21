@@ -15,7 +15,7 @@ import TourRequest from '../../tourRequest/TourRequest'
 
 import { useNavigate } from 'react-router-dom'
 
-const pages = ['Booking', 'Checkout', 'Services']
+const pages = ['Booking', 'Checkout', 'Services', 'Feedback']
 const settings = ['Logout']
 
 const NavBar = () => {
@@ -39,6 +39,8 @@ const NavBar = () => {
       navigate('/checkout')
     } else if (page === 'Services') {
       navigate('/services')
+    } else if (page === 'Feedback') {
+      navigate('/feedback')
     }
   }
 

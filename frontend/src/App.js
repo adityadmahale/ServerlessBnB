@@ -13,6 +13,7 @@ import TourDetails from './components/tourRequest/TourDetails'
 import Login from './components/login/Login';
 import QuestionValidation from './components/login/QuestionValidation';
 import CaesarCipherValidation from './components/login/CaesarCipherValidation';
+import Feedbacks from './components/registration/feedback'
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
           <Route path='/registration' element={<Registration />} />
           <Route path='/' element={<Home />} />
           <Route path='/tourDetails' element={<TourDetails />} />
+          <Route path='/feedback' element={<Feedbacks />} />
+
         </Routes>
       </Router>
     </>
