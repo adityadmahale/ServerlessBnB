@@ -16,7 +16,7 @@ function QuestionValidation() {
     useEffect(() => {
         if (!preventCall) {
             preventCall = true;
-            axios.get('https://bem3lp6o6lrdmahutlk5xt6do40sellk.lambda-url.us-east-1.on.aws/authenticateQuestion/question?username=' + localStorage.getItem("username")) // call lambda to get all question list
+            axios.get('https://j34bg3jr2hbeiktrfabgz5ypgu0ustay.lambda-url.us-east-1.on.aws/authenticateQuestion/question?username=' + localStorage.getItem("username")) // call lambda to get all question list
                 .then(res => {
                     console.log(res);
                     setSecurityQuestion(res.data.question);
@@ -45,7 +45,7 @@ function QuestionValidation() {
             body: obj
         };
 
-        axios.post("https://bem3lp6o6lrdmahutlk5xt6do40sellk.lambda-url.us-east-1.on.aws/authenticateQuestion/validateAns", obj)
+        axios.post("https://j34bg3jr2hbeiktrfabgz5ypgu0ustay.lambda-url.us-east-1.on.aws/authenticateQuestion/validateAns", obj)
             .then(res => {
                 console.log(res.data);
                 navigate("../caesarcipher-validate");
