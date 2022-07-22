@@ -1,22 +1,36 @@
 import React, { useState } from "react";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 //AWS and GCP imports
 import userPool from "./userPool";
 import { db } from "./firebase.config";
 var AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 var AWS = require("aws-sdk");
+const config = {
+	region: "us-east-1",
+	accessKeyId: "ASIAQC5HHFVDGALWIB45",
+	secretAccessKey: "8CkGKiBLhUHWQNVyX0OvaeAkhTjK4I8gRhUzJrlZ",
+	sessionToken:
+		"FwoGZXIvYXdzEB0aDOV6j7HjiQf4oYvIbSLAAavsgkX7PCOW80iLfvv9e3NWSyCrb10oqrV5SlvugEbpEt9pIvkJwQVpVy4PzYYgM4HJMGSIdz0KZ8go6euB49zDujIGYH13OSQN5t9QCh7m5LXTYGurunZxJnOk+mbAb44dZWJ7+b2Q9e3Vyyl68MpM36FxtvjdRsY3dAQO1PcEYdAxvuzYRazIYV3V7hxNlDw9DQaUwSi4U3SSKdSW91nFt9U9lXIh6RZz+oUz8fWQUqcCGTOtETYRmufsqptjlCiPt+iWBjItK4Q9XuQ1xdDgb99w3P20EqM0URoT0jHRujoB1Mp8rNWn+s5oVqNVNHJJY5On",
+};
+AWS.config.update({
+	region: config.region,
+	credentials: new AWS.Credentials(
+		config.accessKeyId,
+		config.secretAccessKey,
+		config.sessionToken
+	),
+});
+
 const dynamodb = new AWS.DynamoDB({
 	apiVersion: "2012-08-10",
 	region: "us-east-1",
@@ -24,24 +38,8 @@ const dynamodb = new AWS.DynamoDB({
 const theme = createTheme();
 
 export default function SignUp() {
+	let navigate = useNavigate();
 	//AWS config
-	const config = {
-		region: "us-east-1",
-		accessKeyId: "ASIAQC5HHFVDAIEJJB6D",
-		secretAccessKey: "IlhwL8hyLlDP6yBbJxmN5HJehE8dHINjdr01WE0Y",
-		sessionToken:
-			"FwoGZXIvYXdzEAMaDJk+jxq3lDJrJ/5OVSLAASWUWv8nfRciOtUMXjbaYegq0DB/mg8saCUOCdDU1TYSSZnNYtIfLxXM8kA7YvmnHsCfvbtvc++TrFcx4e2oBWAMwRLVKPhQPGxesZ0HMMiiwfDhM0pzBboGe7jyX2k1pDeG3/Bw+0BfFKlSRQWUSVjdJbWGjYwtPAfwmgwb+xbOEiWAdsgCsJ1SGB2dFCy4yURCYigxnjt5wKWKA0yY4Z5xnPC1LtI3DMb7rE5y0+VXDXcS+F8a3/VgMX69QlK2USiR1OKWBjItP+WCAnyOquaNTBQavMDEzsIINmJNfya/EeDu5QV/JzLNhFVZFmgRQsX9dQ0G",
-	};
-	AWS.config.update({
-		region: config.region,
-		apiVersion: "latest",
-		credentials: new AWS.Credentials(
-			config.accessKeyId,
-			config.secretAccessKey,
-			config.sessionToken,
-			config.region
-		),
-	});
 	const dbclient = new AWS.DynamoDB(AWS.config);
 
 	//Variables
@@ -83,72 +81,78 @@ export default function SignUp() {
 				)
 				.then(function (response) {
 					setCustomerid(response.data);
-				});
-			//Adding data to cognito
-			var attributeList = [];
-			var dataEmail = {
-				Name: "email",
-				Value: email,
-			};
-			var dataGivenName = {
-				Name: "given_name",
-				Value: givenName,
-			};
-			var dataFamilyName = {
-				Name: "family_name",
-				Value: familyName,
-			};
-			var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(
-				dataEmail
-			);
-			var attributegivenName = new AmazonCognitoIdentity.CognitoUserAttribute(
-				dataGivenName
-			);
-			var attributefamilyName = new AmazonCognitoIdentity.CognitoUserAttribute(
-				dataFamilyName
-			);
-			attributeList.push(attributeEmail);
-			attributeList.push(attributegivenName);
-			attributeList.push(attributefamilyName);
-			userPool.signUp(email, password, attributeList, null, (err, result) => {
-				if (err) {
+					//Adding data to cognito
+					var attributeList = [];
+					var dataEmail = {
+						Name: "email",
+						Value: email,
+					};
+					var dataGivenName = {
+						Name: "given_name",
+						Value: givenName,
+					};
+					var dataFamilyName = {
+						Name: "family_name",
+						Value: familyName,
+					};
+					var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(
+						dataEmail
+					);
+					var attributegivenName =
+						new AmazonCognitoIdentity.CognitoUserAttribute(dataGivenName);
+					var attributefamilyName =
+						new AmazonCognitoIdentity.CognitoUserAttribute(dataFamilyName);
+					attributeList.push(attributeEmail);
+					attributeList.push(attributegivenName);
+					attributeList.push(attributefamilyName);
+					userPool.signUp(
+						email,
+						password,
+						attributeList,
+						null,
+						(err, result) => {
+							if (result) {
+								console.log("user successfully added to cognito");
+								//adding to dynamodb
+
+								const params = {
+									TableName: "UserCred",
+									Item: {
+										Secretquestion1: { S: question1 },
+										answer1: { S: answer1 },
+										Secretquestion2: { S: question2 },
+										answer2: { S: answer2 },
+										Secretquestion3: { S: question3 },
+										answer3: { S: answer3 },
+										email: { S: email },
+										firstName: { S: givenName },
+										lastName: { S: familyName },
+										customerid: { S: customerid },
+									},
+								};
+
+								dynamodb.putItem(params, function (err) {
+									if (err) {
+										console.error("unable to update ", err);
+										return false;
+									} else {
+										console.log("updated");
+
+										//adding to firebase
+										db.collection("userDetails").doc(email).set({
+											email: email,
+											secretKey: secretKey,
+										});
+										navigate("/login");
+									}
+								});
+							}
+						}
+					);
+				})
+				.catch(function (err) {
 					console.log(err);
-					return false;
-				}
-				console.log("user successfully added to cognito");
-			});
-			//adding to dynamodb
-
-			const params = {
-				TableName: "UserCred",
-				Item: {
-					Secretquestion1: { S: question1 },
-					answer1: { S: answer1 },
-					Secretquestion2: { S: question2 },
-					answer2: { S: answer2 },
-					Secretquestion3: { S: question3 },
-					answer3: { S: answer3 },
-					email: { S: email },
-					firstName: { S: givenName },
-					lastName: { S: familyName },
-					customerid: { S: customerid },
-				},
-			};
-
-			dynamodb.putItem(params, function (err) {
-				if (err) {
-					console.error("unable to update ", err);
-					return false;
-				} else {
-					console.log("updated");
-				}
-			});
-			//adding to firebase
-			const data = {
-				email: email,
-				secretKey: secretKey,
-			};
-			db.collection("userDetails").add(data);
+				});
 		}
 	};
 	const validate = (data) => {
@@ -188,7 +192,9 @@ export default function SignUp() {
 		} else if (!/^[A-Za-z0-9]+$/.test(data.get("answer3"))) {
 			errors.answer3 = "Only Alphanumeric is allowed";
 		}
-		if (data.get("secretKey").length !== 3) {
+		if (data.get("secretKey") === "") {
+			errors.secretKey = "Secret key is required";
+		} else if (data.get("secretKey").length > 3) {
 			errors.secretKey = "Secret key should be 3 digits";
 		} else if (!/^[0-9]+$/.test(data.get("secretKey"))) {
 			errors.secretKey = "Only Numeric is allowed";
@@ -207,10 +213,8 @@ export default function SignUp() {
 						flexDirection: "column",
 						alignItems: "center",
 					}}
+					className="r-form"
 				>
-					<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-						<LockOutlinedIcon />
-					</Avatar>
 					<Typography component="h1" variant="h5">
 						Sign up
 					</Typography>
@@ -329,7 +333,7 @@ export default function SignUp() {
 						</Button>
 						<Grid container justifyContent="flex-end">
 							<Grid item>
-								<Link href="#" variant="body2">
+								<Link href="/login" variant="body2">
 									Already have an account? Sign in
 								</Link>
 							</Grid>

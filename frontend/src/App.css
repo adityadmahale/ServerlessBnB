@@ -2,6 +2,31 @@
     height: 40vmin;
     pointer-events: none;
 }
+.r-form {
+    width: 120%;
+    margin: auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 2%;
+    border: 2px solid #8C522A;
+    margin-top: 8%;
+}
+.r-form button {
+    width: 100%;
+    background-color: #8C522A;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: large;
+    
+}
+
+.r-form link {
+    color:#8C522A ;
+}
 
 .f-body {
 

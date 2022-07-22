@@ -6,10 +6,13 @@ import {
   Modal,
   TextField,
   styled,
+  CircularProgress,
 } from '@mui/material'
+
 import { useNavigate } from 'react-router-dom'
 
 import httpClient from '../../utils/httpClient'
+import { toast } from 'react-toastify'
 
 const StyledButton = styled(Button)({
   marginTop: '40px',
@@ -30,6 +33,8 @@ const StyledButton = styled(Button)({
 
 function TourRequest() {
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
@@ -53,17 +58,20 @@ function TourRequest() {
   const onSubmit = async (e) => {
     e.preventDefault()
     const recipientEmail = 'sc529025@dal.ca'
+    setLoading(true)
     const { data } = await httpClient.post(
       '/requestTour',
       { stayDuration, recipientEmail },
       { headers: { 'Access-Control-Allow-Origin': true } }
     )
-    const { success, tourPackages } = data
+    const { success, tourPackage, message } = data
+    setLoading(false)
     if (success) {
-      console.log(tourPackages)
       setStayDuration(0)
       handleClose()
-      navigate('/tourDetails', { state: { tourPackages } })
+      navigate('/tourDetails', { state: { tourPackage } })
+    } else {
+      toast.error(message, { position: 'bottom-left' })
     }
   }
 
@@ -97,8 +105,17 @@ function TourRequest() {
             </Box>
 
             <Box my={2}>
-              <StyledButton fullWidth variant='contained' type='submit'>
-                Request
+              <StyledButton
+                disabled={loading}
+                fullWidth
+                variant='contained'
+                type='submit'
+              >
+                {loading ? (
+                  <CircularProgress size={24} sx={{ ml: 2 }} />
+                ) : (
+                  <>Request</>
+                )}
               </StyledButton>
             </Box>
           </form>
