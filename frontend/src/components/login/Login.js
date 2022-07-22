@@ -2,7 +2,7 @@ import { React } from 'react';
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CognitoUser, AuthenticationDetails } from "amazon-cognito-identity-js";
-import UserPool from "../../Config/awsConfiguration";
+import UserPool from "../registration/userPool.js";
 import { toast } from "react-toastify";
 
 

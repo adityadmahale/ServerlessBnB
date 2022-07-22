@@ -39,21 +39,13 @@ function CaesarCipherValidation() {
             toast.error('Encrypted String can not be empty!!');
             return;
         }
-        const requestBody = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: {
-                'username': localStorage.getItem('username'),
-                'caesarString': createdCipherString,
-                'userInput': encryptedStrForm.encryptedStr
-            }
-        };
+
         let obj = {
             'username': localStorage.getItem('username'),
             'caesarString': createdCipherString,
             'userInput': encryptedStrForm.encryptedStr
         };
-        axios.post('https://us-central1-caesarcipher-356421.cloudfunctions.net/validateCaesar', obj)
+        axios.post('https://us-central1-csci-5410-user-management.cloudfunctions.net/validateCaesar', obj)
             .then(response => {
                 if (response.status === 401) {
                     toast.error('Incorrect cipher. Please try again!!');
@@ -84,7 +76,7 @@ function CaesarCipherValidation() {
                         <input type="text" value={encryptedStrForm.encryptedStr} name="encryptedStr" onChange={handleCaesarCipherValueChange}></input>
                     </div>
 
-                    <button type="submit">Log In</button>
+                    <button type="submit">Submit</button>
                 </div>
             </form>
         </>
