@@ -1,3 +1,8 @@
+/**
+ * Author: Udit Gandhi
+ * DAL ID: B00889579
+ * Email: udit.gandhi@dal.ca
+ */
 const { sendMessage } = require("../pubsub/pubsub");
 const topicID = "order-topic";
 const Firestore = require("@google-cloud/firestore");

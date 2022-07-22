@@ -1,3 +1,8 @@
+/**
+ * Author: Udit Gandhi
+ * DAL ID: B00889579
+ * Email: udit.gandhi@dal.ca
+ */
 // Imports the Google Cloud client library
 const { PubSub } = require("@google-cloud/pubsub");
 const pubSubClient = new PubSub();

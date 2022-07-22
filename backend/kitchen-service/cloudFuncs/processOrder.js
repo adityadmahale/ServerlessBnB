@@ -1,4 +1,9 @@
 /**
+ * Author: Udit Gandhi
+ * DAL ID: B00889579
+ * Email: udit.gandhi@dal.ca
+ */
+/**
  * Triggered from a message on a Cloud Pub/Sub topic.
  *
  * @param {!Object} event Event payload.

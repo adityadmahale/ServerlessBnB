@@ -1,3 +1,15 @@
+/**
+ * Author: Udit Gandhi
+ * DAL ID: B00889579
+ * Email: udit.gandhi@dal.ca
+ */
+/**
+ * Triggered by a change to a Firestore document.
+ *
+ * @param {!Object} event Event payload.
+ * @param {!Object} context Metadata for the event.
+ */
+
 const sgMail = require("@sendgrid/mail");
 
 sgMail.setApiKey(
@@ -14,9 +26,8 @@ async function sendMail(msg) {
 }
 
 exports.helloFirestore = async (event, context) => {
-  console.log("Email received: " + context.params.email);
   const msg = {
-    to: context.params.email,
+    to: event.value.fields.email.stringValue,
     from: "sc529025@dal.ca",
     subject: "Serverless B&B Kitchen",
     text: "Your food order will be delivered in 45 minutes.",

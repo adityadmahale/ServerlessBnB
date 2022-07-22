@@ -1,3 +1,8 @@
+/**
+ * Author: Udit Gandhi
+ * DAL ID: B00889579
+ * Email: udit.gandhi@dal.ca
+ */
 const { initializeApp } = require("firebase/app");
 const { getFirestore } = require("firebase/firestore");
 

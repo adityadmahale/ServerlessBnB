@@ -1,3 +1,8 @@
+/**
+ * Author: Udit Gandhi
+ * DAL ID: B00889579
+ * Email: udit.gandhi@dal.ca
+ */
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
