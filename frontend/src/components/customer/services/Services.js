@@ -56,6 +56,7 @@ function Services() {
       },
       data: {
         customerId: "56789",
+        email: "udit.gandhi@dal.ca",
         order: selectedFood.foodItem,
         price: selectedFood.price,
       },
@@ -135,7 +136,7 @@ function Services() {
           if (event !== null) {
             let currentHrs = new Date().getHours();
             console.log("currentHrs" + currentHrs);
-            if (currentHrs < 6 || currentHrs > 11) {
+            if (!(currentHrs < 6 || currentHrs > 11)) {
               toast.error(
                 "Breakfast can only be ordered between 6 AM to 11 AM."
               );
