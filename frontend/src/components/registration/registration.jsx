@@ -15,32 +15,10 @@ import userPool from "./userPool";
 import { db } from "./firebase.config";
 var AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 var AWS = require("aws-sdk");
-const config = {
-	region: "us-east-1",
-	accessKeyId: "ASIAQC5HHFVDGALWIB45",
-	secretAccessKey: "8CkGKiBLhUHWQNVyX0OvaeAkhTjK4I8gRhUzJrlZ",
-	sessionToken:
-		"FwoGZXIvYXdzEB0aDOV6j7HjiQf4oYvIbSLAAavsgkX7PCOW80iLfvv9e3NWSyCrb10oqrV5SlvugEbpEt9pIvkJwQVpVy4PzYYgM4HJMGSIdz0KZ8go6euB49zDujIGYH13OSQN5t9QCh7m5LXTYGurunZxJnOk+mbAb44dZWJ7+b2Q9e3Vyyl68MpM36FxtvjdRsY3dAQO1PcEYdAxvuzYRazIYV3V7hxNlDw9DQaUwSi4U3SSKdSW91nFt9U9lXIh6RZz+oUz8fWQUqcCGTOtETYRmufsqptjlCiPt+iWBjItK4Q9XuQ1xdDgb99w3P20EqM0URoT0jHRujoB1Mp8rNWn+s5oVqNVNHJJY5On",
-};
-AWS.config.update({
-	region: config.region,
-	credentials: new AWS.Credentials(
-		config.accessKeyId,
-		config.secretAccessKey,
-		config.sessionToken
-	),
-});
-
-const dynamodb = new AWS.DynamoDB({
-	apiVersion: "2012-08-10",
-	region: "us-east-1",
-});
 const theme = createTheme();
 
 export default function SignUp() {
 	let navigate = useNavigate();
-	//AWS config
-	const dbclient = new AWS.DynamoDB(AWS.config);
 
 	//Variables
 	const [email, setEmail] = useState("");
@@ -114,38 +92,35 @@ export default function SignUp() {
 							if (result) {
 								console.log("user successfully added to cognito");
 								//adding to dynamodb
-
-								const params = {
-									TableName: "UserCred",
-									Item: {
-										Secretquestion1: { S: question1 },
-										answer1: { S: answer1 },
-										Secretquestion2: { S: question2 },
-										answer2: { S: answer2 },
-										Secretquestion3: { S: question3 },
-										answer3: { S: answer3 },
-										email: { S: email },
-										firstName: { S: givenName },
-										lastName: { S: familyName },
-										customerid: { S: customerid },
-									},
-								};
-
-								dynamodb.putItem(params, function (err) {
-									if (err) {
-										console.error("unable to update ", err);
-										return false;
-									} else {
-										console.log("updated");
-
+								axios
+									.post(
+										"https://i69hrnaa51.execute-api.us-east-1.amazonaws.com/third",
+										{
+											Secretquestion1: question1,
+											answer1: answer1,
+											Secretquestion2: question2,
+											answer2: answer2,
+											Secretquestion3: question3,
+											answer3: answer3,
+											email: email,
+											firstName: givenName,
+											lastName: familyName,
+											customerid: customerid,
+										}
+									)
+									.then(function (response) {
 										//adding to firebase
 										db.collection("userDetails").doc(email).set({
-											email: email,
+											mail: email,
 											secretKey: secretKey,
 										});
 										navigate("/login");
-									}
-								});
+									})
+									.catch(function (err) {
+										console.log(err);
+									});
+							} else {
+								console.log(err);
 							}
 						}
 					);
