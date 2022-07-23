@@ -75,6 +75,8 @@ exports.requestTour = async (req, res) => {
       const mostPreferredTourID = getMostPreferredTour(tourPackages)
       const { Item } = await getTourPackageDetails(mostPreferredTourID)
 
+      console.log('Recommended tour: ', Item)
+
       const message = {
         recipient: recipientEmail,
         body: formatTourPackages(Item),
@@ -85,6 +87,10 @@ exports.requestTour = async (req, res) => {
       await pubsub
         .topic(EMAIL_SERVICE_TOPIC)
         .publishMessage({ data: messageBuffer })
+
+      console.log(
+        `Email with package details sent to ${recipientEmail} successfully`
+      )
 
       return res.json({ success: true, tourPackage: Item })
     } catch (err) {

@@ -15,11 +15,10 @@ import TourRequest from '../../tourRequest/TourRequest'
 
 import { useNavigate } from 'react-router-dom'
 
-const pages = ['Booking', 'Checkout', 'Services', 'Feedback']
+const pages = ['Booking', 'Checkout', 'Services', 'Feedback', 'Visualizations']
 const settings = ['Logout']
 
 const NavBar = () => {
-
   const navigate = useNavigate()
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
@@ -41,19 +40,19 @@ const NavBar = () => {
       navigate('/services')
     } else if (page === 'Feedback') {
       navigate('/feedback')
+    } else if (page === 'Visualizations') {
+      navigate('/visualizations')
     }
   }
 
-
-
   const redirecToLogin = () => {
-    console.log("Hello");
-    navigate("../login");
+    console.log('Hello')
+    navigate('../login')
   }
 
   const logout = () => {
-    localStorage.setItem("group29_logged_in", false);
-    navigate("../login");
+    localStorage.setItem('group29_logged_in', false)
+    navigate('../login')
   }
 
   const handleCloseUserMenu = (setting) => {
@@ -166,11 +165,11 @@ const NavBar = () => {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title='Profile'>
+            {/* <Tooltip title='Profile'>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <AccountCircleIcon sx={{ color: '#fff' }} />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <Menu
               sx={{ mt: '45px' }}
               id='menu-appbar'
@@ -200,12 +199,23 @@ const NavBar = () => {
             </Menu>
           </Box>
 
-          {localStorage.getItem("group29_logged_in") == "true" ? (<Button onClick={logout} style={{ minWidth: '20px' }} color='inherit'>
-            Logout
-          </Button>) : (<Button onClick={redirecToLogin} style={{ minWidth: '20px' }} color='inherit'>
-            Login
-          </Button>)}
-
+          {localStorage.getItem('group29_logged_in') == 'true' ? (
+            <Button
+              onClick={logout}
+              style={{ minWidth: '20px' }}
+              color='inherit'
+            >
+              Logout
+            </Button>
+          ) : (
+            <Button
+              onClick={redirecToLogin}
+              style={{ minWidth: '20px' }}
+              color='inherit'
+            >
+              Login
+            </Button>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
