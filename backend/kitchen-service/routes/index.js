@@ -9,6 +9,7 @@ const {
   getFoodItems,
   placeOrder,
   getOrdersByCustomer,
+  getOrders,
 } = require("../controllers/Order");
 
 /* GET home page. */
@@ -19,5 +20,6 @@ router.get("/", function (req, res, next) {
 router.get("/getFoodItems", getFoodItems);
 router.post("/placeorder", placeOrder);
 router.get("/getOrdersByCustomer", getOrdersByCustomer);
+router.get("/getOrders", getOrders);
 
 module.exports = router;

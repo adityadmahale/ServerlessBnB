@@ -77,4 +77,23 @@ const getOrdersByCustomer = async (req, res) => {
     message: `Total orders by the customer ${customerId} : ${orders.length}`,
   });
 };
-module.exports = { getFoodItems, placeOrder, getOrdersByCustomer };
+
+const getOrders = async (req, res) => {
+  const ordersRef = firestore.collection(COLLECTION_NAME);
+  const snapshot = await ordersRef.get();
+  if (snapshot.empty) {
+    console.log("No matching documents.");
+    return res.status(404);
+  }
+  let orders = [];
+  snapshot.forEach((doc) => {
+    console.log(doc.id, "=>", doc.data());
+    orders.push(doc.data());
+  });
+  return res.status(200).json({
+    success: true,
+    orders: orders,
+    message: `Total orders by the customers: ${orders.length}`,
+  });
+};
+module.exports = { getFoodItems, placeOrder, getOrdersByCustomer, getOrders };
