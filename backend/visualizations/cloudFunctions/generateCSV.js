@@ -37,10 +37,10 @@ async function uploadCSVToBucket(
   csvHeader
 ) {
   await createBucket(bucketName)
-  const trainCSV = await storage.bucket(bucketName).file(targetFileName)
+  const targetFile = await storage.bucket(bucketName).file(targetFileName)
   // Citation: https://googleapis.dev/nodejs/storage/latest/File.html#createWriteStream
   // The following line of code is written by referring to the source cited above
-  const fileStream = await trainCSV.createWriteStream()
+  const fileStream = await targetFile.createWriteStream()
   fileStream.write(csvHeader)
   fileStream.write(csvStrings.join(EOL))
   fileStream.end()
