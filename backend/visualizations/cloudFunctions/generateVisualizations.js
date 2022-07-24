@@ -132,7 +132,7 @@ async function uploadOrdersCSVToBucket(orders) {
   )
 }
 
-exports.generateCSV = async (req, res) => {
+exports.generateVisualizations = async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*')
   res.set('Access-Control-Allow-Methods', '*')
   res.set('Access-Control-Allow-Headers', '*')
