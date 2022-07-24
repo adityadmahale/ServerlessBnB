@@ -5,8 +5,11 @@ const { EOL } = require('os')
 const storage = new Storage()
 
 const VISUALIZATIONS_BUCKET = 'serverlessbnb-visualizations'
-const ROOMS_ENDPOINT =
-  'https://xqet4nlofotprm2yiiz6rvrcm40giliq.lambda-url.us-east-1.on.aws/rooms'
+const ROOMS_BOOKINGS_BASEURL =
+  'https://xqet4nlofotprm2yiiz6rvrcm40giliq.lambda-url.us-east-1.on.aws'
+
+const ORDERS_ENDPOINT =
+  'https://kitchen-service-kc2rqvhqga-uc.a.run.app/getOrders'
 
 async function createBucket(bucketName) {
   try {
@@ -55,14 +58,96 @@ async function uploadRoomsCSVToBucket(rooms) {
   )
 }
 
+async function uploadBookingsCSVToBucket(bookings) {
+  const csvStrings = []
+
+  const activeBookingsFrequencyMap = new Map()
+
+  for (const booking of bookings) {
+    const { type, active } = booking
+
+    if (activeBookingsFrequencyMap.has(type)) {
+      if (active) {
+        activeBookingsFrequencyMap.set(
+          type,
+          activeBookingsFrequencyMap.get(type) + 1
+        )
+      }
+    } else {
+      if (active) {
+        activeBookingsFrequencyMap.set(type, 1)
+      } else {
+        activeBookingsFrequencyMap.set(type, 0)
+        console.log(`Setting ${type} to 0`)
+      }
+    }
+  }
+
+  const activeBookingsFrequencyObject = Object.fromEntries(
+    activeBookingsFrequencyMap
+  )
+
+  for (const [type, activeBookingsCount] of Object.entries(
+    activeBookingsFrequencyObject
+  )) {
+    const csvString = `${type},${activeBookingsCount}${EOL}`
+    csvStrings.push(csvString)
+  }
+
+  await uploadCSVToBucket(
+    VISUALIZATIONS_BUCKET,
+    'bookings.csv',
+    csvStrings,
+    `Room Type,Active Bookings${EOL}`
+  )
+}
+
+async function uploadOrdersCSVToBucket(orders) {
+  const csvStrings = []
+
+  const ordersFrequencyMap = new Map()
+
+  for (const _order of orders) {
+    const { order } = _order
+
+    if (ordersFrequencyMap.has(order)) {
+      ordersFrequencyMap.set(order, ordersFrequencyMap.get(order) + 1)
+    } else {
+      ordersFrequencyMap.set(order, 1)
+    }
+  }
+
+  const ordersFrequencyObject = Object.fromEntries(ordersFrequencyMap)
+
+  for (const [item, count] of Object.entries(ordersFrequencyObject)) {
+    const csvString = `${item},${count}${EOL}`
+    csvStrings.push(csvString)
+  }
+
+  await uploadCSVToBucket(
+    VISUALIZATIONS_BUCKET,
+    'orders.csv',
+    csvStrings,
+    `Item,Number of orders${EOL}`
+  )
+}
+
 exports.generateCSV = async (req, res) => {
   res.set('Access-Control-Allow-Origin', '*')
   res.set('Access-Control-Allow-Methods', '*')
   res.set('Access-Control-Allow-Headers', '*')
 
-  const { data: rooms } = await axios.get(ROOMS_ENDPOINT)
+  const {
+    data: { orders },
+  } = await axios.get(`${ORDERS_ENDPOINT}`)
+  const { data: rooms } = await axios.get(`${ROOMS_BOOKINGS_BASEURL}/rooms`)
+  const { data: bookings } = await axios.get(
+    `${ROOMS_BOOKINGS_BASEURL}/bookings`
+  )
 
-  uploadRoomsCSVToBucket(rooms)
+  await uploadRoomsCSVToBucket(rooms)
+  await uploadBookingsCSVToBucket(bookings)
+  await uploadOrdersCSVToBucket(orders)
 
   res.json({ success: true })
 }
