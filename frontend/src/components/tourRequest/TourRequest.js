@@ -57,7 +57,7 @@ function TourRequest() {
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    const recipientEmail = 'sc529025@dal.ca'
+    const recipientEmail = localStorage.getItem('username')
     setLoading(true)
     const { data } = await httpClient.post(
       '/requestTour',

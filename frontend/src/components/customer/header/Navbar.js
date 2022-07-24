@@ -15,13 +15,27 @@ import TourRequest from '../../tourRequest/TourRequest'
 
 import { useNavigate } from 'react-router-dom'
 
-const pages = ['Booking', 'Checkout', 'Services', 'Feedback', 'Visualizations']
+const pages = ['Booking', 'Checkout', 'Services', 'Feedback']
+const authPages = [
+  'Booking',
+  'Checkout',
+  'Services',
+  'Feedback',
+  'Visualizations',
+]
 const settings = ['Logout']
 
 const NavBar = () => {
   const navigate = useNavigate()
   const [anchorElNav, setAnchorElNav] = React.useState(null)
   const [anchorElUser, setAnchorElUser] = React.useState(null)
+
+  const isLoggedIn = () => {
+    return (
+      localStorage.getItem('group29_logged_in') !== null &&
+      localStorage.getItem('group29_logged_in') === 'true'
+    )
+  }
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -63,6 +77,35 @@ const NavBar = () => {
     if (setting === 'Logout') {
       navigate('/')
     }
+  }
+
+  const renderLinks = () => {
+    const links = isLoggedIn() ? authPages : pages
+    return links.map((page) => (
+      <MenuItem
+        key={page}
+        onClick={() => {
+          handleCloseNavMenu(page)
+        }}
+      >
+        <Typography textAlign='center'>{page}</Typography>
+      </MenuItem>
+    ))
+  }
+
+  const renderLinksOnSmallScreens = () => {
+    const links = isLoggedIn() ? authPages : pages
+    return links.map((page) => (
+      <Button
+        key={page}
+        onClick={() => {
+          handleCloseNavMenu(page)
+        }}
+        sx={{ my: 2, color: 'white', display: 'block' }}
+      >
+        {page}
+      </Button>
+    ))
   }
 
   return (
@@ -117,16 +160,7 @@ const NavBar = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem
-                  key={page}
-                  onClick={() => {
-                    handleCloseNavMenu(page)
-                  }}
-                >
-                  <Typography textAlign='center'>{page}</Typography>
-                </MenuItem>
-              ))}
+              {renderLinks()}
             </Menu>
           </Box>
           <Typography
@@ -147,21 +181,11 @@ const NavBar = () => {
           >
             ServerlessBnB
           </Typography>
-          <TourRequest />
+          {isLoggedIn() && <TourRequest />}
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {/* TODO add necessary page menu options */}
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={() => {
-                  handleCloseNavMenu(page)
-                }}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            {renderLinksOnSmallScreens()}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
