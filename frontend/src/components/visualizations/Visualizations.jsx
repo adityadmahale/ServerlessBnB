@@ -9,7 +9,7 @@ function Visualizations() {
       <iframe
         width='100%'
         height='100%'
-        src='https://datastudio.google.com/embed/reporting/966842de-6030-4496-a135-f7a1ef978c85/page/FxVyC'
+        src='https://datastudio.google.com/embed/reporting/f0ab2ef4-dbc0-4ed2-82f4-e57edab3e8f7/page/rOXyC'
         frameBorder='0'
         style={{ border: 0 }}
         title='ServerlessBnBVisualizations'
