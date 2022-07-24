@@ -137,17 +137,20 @@ exports.generateCSV = async (req, res) => {
   res.set('Access-Control-Allow-Methods', '*')
   res.set('Access-Control-Allow-Headers', '*')
 
-  const {
-    data: { orders },
-  } = await axios.get(`${ORDERS_ENDPOINT}`)
-  const { data: rooms } = await axios.get(`${ROOMS_BOOKINGS_BASEURL}/rooms`)
-  const { data: bookings } = await axios.get(
-    `${ROOMS_BOOKINGS_BASEURL}/bookings`
-  )
+  try {
+    const {
+      data: { orders },
+    } = await axios.get(`${ORDERS_ENDPOINT}`)
+    const { data: rooms } = await axios.get(`${ROOMS_BOOKINGS_BASEURL}/rooms`)
+    const { data: bookings } = await axios.get(
+      `${ROOMS_BOOKINGS_BASEURL}/bookings`
+    )
 
-  await uploadRoomsCSVToBucket(rooms)
-  await uploadBookingsCSVToBucket(bookings)
-  await uploadOrdersCSVToBucket(orders)
-
-  res.json({ success: true })
+    await uploadRoomsCSVToBucket(rooms)
+    await uploadBookingsCSVToBucket(bookings)
+    await uploadOrdersCSVToBucket(orders)
+    res.json({ success: true })
+  } catch (err) {
+    res.json({ success: false, message: err.message })
+  }
 }
