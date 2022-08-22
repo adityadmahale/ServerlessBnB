@@ -25,3 +25,27 @@ The application is developed using the below mentioned AWS and GCP services:
 ## Serverless B&B Application Architecture
 
 ![Architecture](screenshots/architecture.png "Architecture")
+
+## User Registration Flow Diagram
+
+![User Registration Flow Diagram](screenshots/user_registration_flow.png "User Registration Flow Diagram")
+
+## User Authentication Flow Diagram
+
+![User Authentication Flow Diagram](screenshots/user_authentication.png "User Authentication Flow Diagram")
+
+## Interaction Diagram for Kitchen Service
+
+![Interaction Diagram for Kitchen Service](screenshots/kitchen_service.png "Interaction Diagram for Kitchen Service")
+
+## Booking and Searching Rooms User Flow Diagram
+
+![Booking and Searching Rooms User Flow Diagram](screenshots/booking.png "Booking and Searching Rooms User Flow Diagram")
+
+## Screenshots
+
+![Booking](screenshots/booking_screen.png "Booking")
+
+![Home](screenshots/home.png "Home")
+
+![Encrypt](screenshots/encrypt.png "Encrypt")
